@@ -2,33 +2,33 @@ package main
 
 import (
 	"net/http"
-	"restful-api/app"
-	"restful-api/controller"
 	"restful-api/helper"
 	"restful-api/middleware"
-	"restful-api/repository"
-	"restful-api/service"
 
 	_ "github.com/go-sql-driver/mysql"
-
-	"github.com/go-playground/validator/v10"
 )
+
+func NewServer(authMiddleware *middleware.Auth_Middleware) *http.Server {
+	return &http.Server{
+		Addr:    "localhost:3000",
+		Handler: authMiddleware,
+	}
+}
 
 func main() {
 
-	db := app.Newdb()
-	validator := validator.New()
+	// db := app.Newdb()
+	// validator := validator.New()
 
-	categoryRepository := repository.NewCategoryRepository()
-	categoryService := service.NewCategoryService(categoryRepository, db, validator)
-	categoryController := controller.NewCategoryController(categoryService)
+	// categoryRepository := repository.NewCategoryRepository()
+	// categoryService := service.NewCategoryService(categoryRepository, db, validator)
+	// categoryController := controller.NewCategoryController(categoryService)
 
-	router := app.NewRouter(categoryController)
+	// router := app.NewRouter(categoryController)
+	// authMiddleware := middleware.New_Auth_Middleware(router)
+	// server := NewServer(authMiddleware)
 
-	server := http.Server{
-		Addr:    "localhost:3000",
-		Handler: middleware.New_Auth_Middleware(router),
-	}
+	server := InitializedServer()
 
 	err := server.ListenAndServe()
 	helper.PanicIfError(err)
